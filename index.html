@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <title>Subscription Access</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">Access Control</p>
+      <h1>সাবস্ক্রিপশন ফর্ম পূরণ করুন, তারপর কমেন্ট করুন</h1>
+      <p class="lede">একটি দ্রুত ফর্ম পূরণ করলেই আপনার মন্তব্যের অ্যাক্সেস আনলক হবে।</p>
+      <a href="#" id="open-form" class="primary-link">সাবস্ক্রিপশন ফর্ম খুলুন</a>
+    </header>
+
+    <section class="card card--form hidden" id="access-form-card">
+      <div class="card-head">
+        <div>
+          <p class="eyebrow">Subscription</p>
+          <h2>অ্যাক্সেস ফর্ম</h2>
+        </div>
+        <span class="pill">Secure</span>
+      </div>
+      <form id="access-form" novalidate>
+        <label for="name">নাম</label>
+        <input type="text" id="name" placeholder="যেমনঃ Rahim" autocomplete="name" required />
+
+        <label for="email">ইমেইল</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required />
+
+        <button type="submit">সংরক্ষণ ও চালু করুন</button>
+      </form>
+    </section>
+
+    <section class="card card--comment" id="comment-card">
+      <h2>কমেন্ট প্যানেল</h2>
+      <p id="access-message">প্রথমে সাবস্ক্রিপশন ফর্ম পূরণ করুন।</p>
+      <form id="comment-form" class="hidden" novalidate>
+        <label class="sr-only" for="comment-input">কমেন্ট</label>
+        <textarea id="comment-input" rows="4" placeholder="আপনার মতামত"></textarea>
+        <button type="submit">কমেন্ট পাঠান</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
