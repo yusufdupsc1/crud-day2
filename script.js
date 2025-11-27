@@ -1,70 +1,67 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const STORAGE_KEY = "commentUser";
+  const KEY = "commentUser";
 
-  const openForm = document.getElementById("open-form");
-  const formCard = document.getElementById("access-form-card");
-  const accessForm = document.getElementById("access-form");
-  const nameInput = document.getElementById("name");
-  const emailInput = document.getElementById("email");
-  const commentForm = document.getElementById("comment-form");
-  const commentInput = document.getElementById("comment-input");
-  const accessMessage = document.getElementById("access-message");
-
-  const saveUser = (user) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  const refs = {
+    openForm: document.getElementById("open-form"),
+    formCard: document.getElementById("access-form-card"),
+    accessForm: document.getElementById("access-form"),
+    nameInput: document.getElementById("name"),
+    emailInput: document.getElementById("email"),
+    commentForm: document.getElementById("comment-form"),
+    commentInput: document.getElementById("comment-input"),
+    accessMessage: document.getElementById("access-message"),
   };
 
-  const loadUser = () => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
+  const showMessage = (text) => (refs.accessMessage.textContent = text);
+  const saveUser = (user) => localStorage.setItem(KEY, JSON.stringify(user));
+  const loadUser = () => JSON.parse(localStorage.getItem(KEY) || "null");
+
+  const showComments = (user) => {
+    showMessage(`স্বাগতম ${user.name}! এখন কমেন্ট করুন।`);
+    refs.commentForm.classList.remove("hidden");
+    refs.formCard.classList.add("hidden");
   };
 
-  const unlockComments = (user) => {
-    accessMessage.textContent = `স্বাগতম ${user.name}! এখন কমেন্ট করুন।`;
-    commentForm.classList.remove("hidden");
-    formCard.classList.add("hidden");
+  const hideComments = () => {
+    showMessage("প্রথমে সাবস্ক্রিপশন ফর্ম পূরণ করুন।");
+    refs.commentForm.classList.add("hidden");
   };
 
-  const lockComments = () => {
-    accessMessage.textContent = "প্রথমে সাবস্ক্রিপশন ফর্ম পূরণ করুন।";
-    commentForm.classList.add("hidden");
-  };
+  const user = loadUser();
+  user ? showComments(user) : hideComments();
 
-  const storedUser = loadUser();
-  storedUser ? unlockComments(storedUser) : lockComments();
-
-  openForm.addEventListener("click", (event) => {
+  refs.openForm.addEventListener("click", (event) => {
     event.preventDefault();
-    formCard.classList.remove("hidden");
-    nameInput.focus();
+    refs.formCard.classList.remove("hidden");
+    refs.nameInput.focus();
   });
 
-  accessForm.addEventListener("submit", (event) => {
+  refs.accessForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
+    const name = refs.nameInput.value.trim();
+    const email = refs.emailInput.value.trim();
 
     if (!name || !email.includes("@")) {
-      accessMessage.textContent = "নাম এবং ইমেইল দিন।";
+      showMessage("নাম এবং ইমেইল দিন।");
       return;
     }
 
-    const user = { name, email };
-    saveUser(user);
-    unlockComments(user);
-    accessForm.reset();
+    const newUser = { name, email };
+    saveUser(newUser);
+    showComments(newUser);
+    refs.accessForm.reset();
   });
 
-  commentForm.addEventListener("submit", (event) => {
+  refs.commentForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const comment = commentInput.value.trim();
+    const comment = refs.commentInput.value.trim();
 
     if (!comment) {
-      accessMessage.textContent = "কমেন্ট লিখুন তারপর পাঠান।";
+      showMessage("কমেন্ট লিখুন তারপর পাঠান।");
       return;
     }
 
-    accessMessage.textContent = "কমেন্ট জমা হয়েছে।";
-    commentInput.value = "";
+    showMessage("কমেন্ট জমা হয়েছে।");
+    refs.commentInput.value = "";
   });
 });
