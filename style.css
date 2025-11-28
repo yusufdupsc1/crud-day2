@@ -25,6 +25,8 @@ header h1 {
 /* Products Container Section */
 .products-container {
     padding: 20px;
+    position: relative;
+    min-height: 70vh;
 }
 
 #products-list {
@@ -90,6 +92,7 @@ header h1 {
     max-width: 1000px;
     margin: 0 auto;
     position: relative;
+    min-height: 70vh;
 }
 
 .back-btn {

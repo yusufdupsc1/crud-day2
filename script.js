@@ -4,6 +4,12 @@ let productsPage = document.getElementById("products-page");
 let singleProductPage = document.getElementById("single-product-page");
 let singleProductContainer = document.getElementById("single-product");
 let singleProductLoader = document.getElementById("single-product-loader");
+let pageLoader = document.getElementById("page-loader");
+
+function togglePageLoader(isVisible) {
+    if (!pageLoader) return;
+    pageLoader.classList.toggle("active", isVisible);
+}
 
 function toggleSingleLoader(isVisible) {
     if (!singleProductLoader) return;
@@ -11,6 +17,7 @@ function toggleSingleLoader(isVisible) {
 }
 
 // Fetch Products Section
+togglePageLoader(true);
 fetch("https://dummyjson.com/products")
     .then(function(response) {
         if (!response.ok) {
@@ -45,6 +52,9 @@ fetch("https://dummyjson.com/products")
     .catch(function(error) {
         console.log(error);
         showToast(error.message, "error");
+    })
+    .finally(function() {
+        togglePageLoader(false);
     });
 
 // View Product Function Section
