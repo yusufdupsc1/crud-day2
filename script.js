@@ -3,6 +3,12 @@ let productsContainer = document.getElementById("products-list");
 let productsPage = document.getElementById("products-page");
 let singleProductPage = document.getElementById("single-product-page");
 let singleProductContainer = document.getElementById("single-product");
+let singleProductLoader = document.getElementById("single-product-loader");
+
+function toggleSingleLoader(isVisible) {
+    if (!singleProductLoader) return;
+    singleProductLoader.classList.toggle("active", isVisible);
+}
 
 // Fetch Products Section
 fetch("https://dummyjson.com/products")
@@ -45,6 +51,8 @@ fetch("https://dummyjson.com/products")
 function viewProduct(id) {
     productsPage.style.display = "none";
     singleProductPage.style.display = "block";
+    singleProductContainer.innerHTML = "";
+    toggleSingleLoader(true);
     
     fetch("https://dummyjson.com/products/" + id)
         .then(function(response) {
@@ -129,6 +137,9 @@ function viewProduct(id) {
         .catch(function(error) {
             console.log(error);
             showToast(error.message, "error");
+        })
+        .finally(function() {
+            toggleSingleLoader(false);
         });
 }
 
@@ -136,4 +147,6 @@ function viewProduct(id) {
 function goBack() {
     singleProductPage.style.display = "none";
     productsPage.style.display = "block";
+    toggleSingleLoader(false);
+    singleProductContainer.innerHTML = "";
 }

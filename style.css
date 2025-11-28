@@ -89,6 +89,7 @@ header h1 {
     padding: 20px;
     max-width: 1000px;
     margin: 0 auto;
+    position: relative;
 }
 
 .back-btn {
@@ -224,6 +225,40 @@ header h1 {
 
 .shipping-info p:last-child {
     margin-bottom: 0;
+}
+
+.loader-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    z-index: 10;
+    color: #333;
+    font-weight: 600;
+}
+
+.loader-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 5px solid #e0e0e0;
+    border-top-color: #27ae60;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* Reviews Section */
