@@ -1,3 +1,4 @@
+// Page wiring: cache DOM nodes we reuse across list/detail flows
 const els = {
     productsPage: document.getElementById("products-page"),
     singlePage: document.getElementById("single-product-page"),
@@ -15,7 +16,7 @@ const showPage = (mode) => {
 };
 
 const api = async (path) => {
-    const res = await fetch(`https://dummyjso.com/${path}`);
+    const res = await fetch(`https://dummyjson.com/${path}`);
     if (!res.ok) throw new Error(`Request failed (${res.status})`);
     return res.json();
 };
