@@ -1,40 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Store</title>
     <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  </head>
+  <body>
+    <header><h1>Product Store</h1></header>
 
-    <!-- Header Section -->
-    <header>
-        <h1>Product Store</h1>
-    </header>
-
-    <!-- Products Section -->
     <section class="products-container" id="products-page">
-        <div id="page-loader" class="loader-overlay active">
-            <div class="spinner"></div>
-            <p>Loading products</p>
-        </div>
-        <div id="products-list">
-
-        </div>
+      <div id="page-loader" class="loader-overlay active">
+        <div class="spinner"></div><p>Loading products</p>
+      </div>
+      <div id="products-list"></div>
     </section>
 
-    <!-- Single Product Section -->
-    <section class="single-product-container" id="single-product-page">
-        <button class="back-btn" onclick="goBack()">← Back to Products</button>
-        <div id="single-product-loader" class="loader-overlay">
-            <div class="spinner"></div>
-            <p>Loading product details</p>
-        </div>
-        <div id="single-product"></div>
+    <section class="single-product-container" id="single-product-page" hidden>
+      <button class="btn back-btn" id="back-btn">← Back</button>
+      <div id="single-product-loader" class="loader-overlay">
+        <div class="spinner"></div><p>Loading product</p>
+      </div>
+      <div id="single-product"></div>
     </section>
 
     <script src="utilities.js"></script>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

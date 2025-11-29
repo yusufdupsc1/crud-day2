@@ -1,162 +1,128 @@
-// Variables Section
-let productsContainer = document.getElementById("products-list");
-let productsPage = document.getElementById("products-page");
-let singleProductPage = document.getElementById("single-product-page");
-let singleProductContainer = document.getElementById("single-product");
-let singleProductLoader = document.getElementById("single-product-loader");
-let pageLoader = document.getElementById("page-loader");
+const els = {
+    productsPage: document.getElementById("products-page"),
+    singlePage: document.getElementById("single-product-page"),
+    list: document.getElementById("products-list"),
+    single: document.getElementById("single-product"),
+    pageLoader: document.getElementById("page-loader"),
+    singleLoader: document.getElementById("single-product-loader"),
+    backBtn: document.getElementById("back-btn"),
+};
 
-function togglePageLoader(isVisible) {
-    if (!pageLoader) return;
-    pageLoader.classList.toggle("active", isVisible);
-}
+const toggle = (el, show) => el?.classList.toggle("active", !!show);
+const showPage = (mode) => {
+    els.productsPage.hidden = mode === "single";
+    els.singlePage.hidden = mode !== "single";
+};
 
-function toggleSingleLoader(isVisible) {
-    if (!singleProductLoader) return;
-    singleProductLoader.classList.toggle("active", isVisible);
-}
+const api = async (path) => {
+    const res = await fetch(`https://dummyjso.com/${path}`);
+    if (!res.ok) throw new Error(`Request failed (${res.status})`);
+    return res.json();
+};
 
-// Fetch Products Section
-togglePageLoader(true);
-fetch("https://dummyjson.com/products")
-    .then(function(response) {
-        if (!response.ok) {
-            throw new Error("HTTP Error: " + response.status);
-        }
-        return response.json();
-    })
-    .then(function(data) {
-        console.log(data);
-        
-        let products = data.products;
-        
-        // Loop Through Products Section
-        for (let i = 0; i < products.length; i++) {
-            let product = products[i];
-            
-            // Create Card Section
-            let card = document.createElement("div");
-            card.className = "product-card";
-            
-            card.innerHTML = `
-                <h2>${product.title}</h2>
-                <p class="price">$${product.price}</p>
-                <p class="category">${product.category}</p>
-                <p class="description">${product.description}</p>
-                <button class="view-btn" onclick="viewProduct(${product.id})">View Product</button>
-            `;
-            
-            productsContainer.appendChild(card);
-        }
-    })
-    .catch(function(error) {
-        console.log(error);
-        showToast(error.message, "error");
-    })
-    .finally(function() {
-        togglePageLoader(false);
-    });
-
-// View Product Function Section
-function viewProduct(id) {
-    productsPage.style.display = "none";
-    singleProductPage.style.display = "block";
-    singleProductContainer.innerHTML = "";
-    toggleSingleLoader(true);
-    
-    fetch("https://dummyjson.com/products/" + id)
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error("HTTP Error: " + response.status);
-            }
-            return response.json();
-        })
-        .then(function(product) {
-            console.log(product);
-            
-            // Generate Stars Section
-            let stars = "";
-            let fullStars = Math.floor(product.rating);
-            for (let i = 0; i < 5; i++) {
-                if (i < fullStars) {
-                    stars += "★";
-                } else {
-                    stars += "☆";
-                }
-            }
-            
-            // Generate Reviews Section
-            let reviewsHtml = "";
-            for (let i = 0; i < product.reviews.length; i++) {
-                let review = product.reviews[i];
-                reviewsHtml += `
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="reviewer-name">${review.reviewerName}</span>
-                            <span class="review-rating">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</span>
-                        </div>
-                        <p class="review-comment">${review.comment}</p>
-                    </div>
-                `;
-            }
-            
-            // Generate Tags Section
-            let tagsHtml = "";
-            for (let i = 0; i < product.tags.length; i++) {
-                tagsHtml += `<span class="tag">${product.tags[i]}</span>`;
-            }
-            
-            singleProductContainer.innerHTML = `
-                <div class="product-detail">
-                    <div class="product-image">
-                        <img src="${product.thumbnail}" alt="${product.title}">
-                    </div>
-                    <div class="product-info">
-                        <h1>${product.title}</h1>
-                        <p class="brand">by ${product.brand}</p>
-                        <div class="tags">${tagsHtml}</div>
-                        <div class="rating">
-                            <span class="stars">${stars}</span>
-                            <span class="rating-number">${product.rating}</span>
-                        </div>
-                        <div class="price-section">
-                            <span class="current-price">$${product.price}</span>
-                            <span class="discount">${product.discountPercentage}% OFF</span>
-                        </div>
-                        <p class="description">${product.description}</p>
-                        <div class="product-meta">
-                            <p><strong>Category:</strong> ${product.category}</p>
-                            <p><strong>Stock:</strong> ${product.stock} (${product.availabilityStatus})</p>
-                            <p><strong>SKU:</strong> ${product.sku}</p>
-                            <p><strong>Weight:</strong> ${product.weight}g</p>
-                            <p><strong>Dimensions:</strong> ${product.dimensions.width} x ${product.dimensions.height} x ${product.dimensions.depth} cm</p>
-                        </div>
-                        <div class="shipping-info">
-                            <p>📦 ${product.shippingInformation}</p>
-                            <p>🛡️ ${product.warrantyInformation}</p>
-                            <p>↩️ ${product.returnPolicy}</p>
-                        </div>
-                    </div>
+const stars = (rating) => "★".repeat(Math.round(rating)).padEnd(5, "☆");
+const pills = (items) => (items || []).map((item) => `<span class="tag">${item}</span>`).join("");
+const reviews = (list) =>
+    (list || [])
+        .map(
+            (r) => `
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="reviewer-name">${r.reviewerName}</span>
+                    <span class="review-rating">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span>
                 </div>
-                <div class="reviews-section">
-                    <h2>Customer Reviews</h2>
-                    <div class="reviews-list">${reviewsHtml}</div>
-                </div>
-            `;
-        })
-        .catch(function(error) {
-            console.log(error);
-            showToast(error.message, "error");
-        })
-        .finally(function() {
-            toggleSingleLoader(false);
-        });
-}
+                <p class="review-comment">${r.comment}</p>
+            </div>`
+        )
+        .join("");
 
-// Go Back Function Section
-function goBack() {
-    singleProductPage.style.display = "none";
-    productsPage.style.display = "block";
-    toggleSingleLoader(false);
-    singleProductContainer.innerHTML = "";
-}
+const renderProducts = (products) => {
+    els.list.innerHTML = products
+        .map(
+            (p) => `
+            <article class="product-card card">
+                <h2>${p.title}</h2>
+                <p class="price">$${p.price}</p>
+                <p class="category">${p.category}</p>
+                <p class="description">${p.description}</p>
+                <button class="btn view-btn" data-id="${p.id}">View Product</button>
+            </article>`
+        )
+        .join("");
+};
+
+const renderProduct = (p) => `
+    <div class="product-detail card">
+        <div class="product-image">
+            <img src="${p.thumbnail}" alt="${p.title}">
+        </div>
+        <div class="product-info">
+            <h1>${p.title}</h1>
+            <p class="brand">by ${p.brand}</p>
+            <div class="tags">${pills(p.tags)}</div>
+            <div class="rating"><span class="stars">${stars(p.rating)}</span><span class="rating-number">${p.rating}</span></div>
+            <div class="price-section">
+                <span class="current-price">$${p.price}</span>
+                <span class="discount">${p.discountPercentage}% OFF</span>
+            </div>
+            <p class="description">${p.description}</p>
+            <div class="product-meta">
+                <p><strong>Category:</strong> ${p.category}</p>
+                <p><strong>Stock:</strong> ${p.stock} (${p.availabilityStatus || "Available"})</p>
+                <p><strong>SKU:</strong> ${p.sku || "N/A"}</p>
+                <p><strong>Weight:</strong> ${p.weight || "–"}g</p>
+                <p><strong>Dimensions:</strong> ${p.dimensions.width} x ${p.dimensions.height} x ${p.dimensions.depth} cm</p>
+            </div>
+            <div class="shipping-info">
+                <p>📦 ${p.shippingInformation || "Shipping details coming soon."}</p>
+                <p>🛡️ ${p.warrantyInformation || "Warranty information unavailable."}</p>
+                <p>↩️ ${p.returnPolicy || "Return policy unavailable."}</p>
+            </div>
+        </div>
+    </div>
+    <section class="reviews-section card">
+        <h2>Customer Reviews</h2>
+        <div class="reviews-list">${reviews(p.reviews) || '<p class="muted">No reviews yet.</p>'}</div>
+    </section>
+`;
+
+const loadProducts = async () => {
+    toggle(els.pageLoader, true);
+    try {
+        const { products } = await api("products");
+        renderProducts(products);
+    } catch (err) {
+        console.error(err);
+        showToast(err.message, "error");
+    } finally {
+        toggle(els.pageLoader, false);
+    }
+};
+
+const viewProduct = async (id) => {
+    showPage("single");
+    els.single.innerHTML = "";
+    toggle(els.singleLoader, true);
+    try {
+        const product = await api(`products/${id}`);
+        els.single.innerHTML = renderProduct(product);
+    } catch (err) {
+        console.error(err);
+        showToast(err.message, "error");
+    } finally {
+        toggle(els.singleLoader, false);
+    }
+};
+
+els.list.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-id]");
+    if (btn) viewProduct(btn.dataset.id);
+});
+
+els.backBtn.addEventListener("click", () => {
+    showPage("list");
+    els.single.innerHTML = "";
+    toggle(els.singleLoader, false);
+});
+
+loadProducts();
